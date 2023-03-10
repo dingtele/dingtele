@@ -255,5 +255,16 @@ x
     (cond ((number? s)
             (+ s t))
           (else (total-weight s))))
-  (+  (ite (branch-structure-selector (left-branch-selector mobile)) 0)
-      (ite (branch-structure-selector (right-branch-selector mobile)) 0)))
+  (if ((not (pair? mobile)) mobile)
+      (+  (ite (branch-structure-selector (left-branch-selector mobile)) 0)
+      (ite (branch-structure-selector (right-branch-selector mobile)) 0))))
+
+(define (torque branch)
+  (*  (branch-length-selector) (totalweight (branch-structure-selector branch))))
+(define (isBalanced? mobile)
+  (if (not (pair? mobile))
+      true
+      (and (= (torque (left-branch-selector mobile)) (torque (right-branch-selector mobile)))
+            (isBalanced (branch-structure-selector (left-branch-selector mobile)))
+            (isBalanced (branch-structure-selector (right-branch-selector mobile))))))
+   
