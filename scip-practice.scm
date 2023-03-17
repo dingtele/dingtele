@@ -305,3 +305,24 @@ x
 (define (length sequence)
   (accumulate (lambda (x y)
                       (+ y 1)) 0 sequence))
+
+(define (horner-eval x coefficient-sequence)
+    (accumulate (lambda (this-coeff higher-terms)
+                        (+ (* higher-terms x) this-coeff))
+                0
+                coefficient-sequence))
+
+(define (count-leaves t)
+  (accumulate +
+              0 
+              (map (lambda(x) 
+                    (cond ((null? x) 0)
+                          ((pair? x) (count-leaves x))
+                          (else 1)))
+                    t)))
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      nil
+      (cons (accumulate op init (map (lambda (x) (car x) seqs)))
+            (accumulate-n op init (map (lambda (x) (cdr x) seqs))))))
