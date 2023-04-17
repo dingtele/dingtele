@@ -326,3 +326,94 @@ x
       nil
       (cons (accumulate op init (map (lambda (x) (car x) seqs)))
             (accumulate-n op init (map (lambda (x) (cdr x) seqs))))))
+
+(define (fold-left op initial sequence)
+  (define (iter result rest)
+    (if (null? rest) 
+        result
+        (iter (op result (car rest))(cdr rest))))
+  (iter initial sequence))
+
+(define (fold-right op initial sequence) ;; fold-right
+  (if (null? sequence) 
+      initial 
+      (op (car sequence) 
+          (accumulate op initial (cdr sequence))))) 
+
+(define (reverse sequence)
+  (fold-right (lambda (x y) (append y (list x))) nil sequence))
+  
+(define (reverse sequence)
+  (fold-left (lambda (x y) (list y) x) nil sequence))
+
+(define (filter predicate sequence)
+  (cond ((null? sequence) nil)
+        ((predicate (car sequence))
+            (cons (car sequence)
+                  (filter predicate (cdr sequence))))
+        (else (filter predicate (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append nil (map proc seq)))
+
+(define (permutations s)
+  (if (null? s)
+      '()
+      (flatten (lambda(x) 
+                  (map (lambda(P)(cons x p)) (permutations (remove x s))))
+                s)))
+
+(define (enumerate-elm low high) 
+  (if (> low high)
+      nil
+      (cons low (enumerate-elm (+ low 1) high))))
+
+(define (unique-pairs n)
+  (flatmap (lambda (x) 
+              (map (lambda(y) 
+                          (list x y))
+                    (enumerate-elm 1 (- x 1))))
+      (enumerate-elm 1 n)))
+(define (prime-sum? p)
+  (prime? (+ (car p) (cdr p)))) 
+
+(define (make-pairs p)
+  (list (car p) (cdr p) (+ (car p) (cdr p))))
+
+ (define (prime-sum-pairs n) 
+  (map make-pairs (filter prime-sum? (unique-pairs n))))
+
+(define (ordered-triples n)
+  (flatmap (lambda (x) 
+              (flatmap (lambda(y) 
+                          (map (lambda(z)(list x y z))
+                                          (enumerate-interval 1 (- y 1))))
+                        (enumerate-interval 1 (- x 1))))
+      (enumerate-interval 1 n)))
+
+ (define (find-ordered-triples n s) 
+  (filter (lambda(x)(= (accumulate + 0 x) s)) (ordered-triples n)))
+
+(define (queens board-size)
+	(define (queen-cols k)
+		(if (= k 0)
+			(list empty-board)
+			(filter
+				(lambda (positions) (safe? k positions))
+				(flatmap
+					(lambda (rest-of-queens)
+						(map (lambda (new-row)
+								(adjoin-position new-row k rest-of-queens))
+							(enumerate-interval 1 board-size)))
+					(queen-cols (- k 1))))))
+	(queen-cols board-size))
+
+(define (adjoin-position new-row k rest-of-queens)
+	(cons (list new-row k) rest-of-queens))
+
+(define empty-board
+	())
+(define (safe? k positions)
+	(if (= )))
+
+	what those old greeks, whom one must also credit with a little knowledge of philosophy, took to be the task of a whole lifetime, doubt not being a skill one acquires in days and weeks; what the old veteran warrior achieved after keeping the balance of doubt in the face of all inveiglement, fearlessly reject the certainties of sense and thought, incorruptibly defying the selfish anxieties and the wheedling of sympathies
