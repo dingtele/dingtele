@@ -416,4 +416,18 @@ x
 (define (safe? k positions)
 	(if (= )))
 
-	what those old greeks, whom one must also credit with a little knowledge of philosophy, took to be the task of a whole lifetime, doubt not being a skill one acquires in days and weeks; what the old veteran warrior achieved after keeping the balance of doubt in the face of all inveiglement, fearlessly reject the certainties of sense and thought, incorruptibly defying the selfish anxieties and the wheedling of sympathies
+;;what those old greeks, whom one must also credit with a little knowledge of philosophy, took to be the task of a whole lifetime, doubt not being a skill one acquires in days and weeks; what the old veteran warrior achieved after keeping the balance of doubt in the face of all inveiglement, fearlessly reject the certainties of sense and thought, incorruptibly defying the selfish anxieties and the wheedling of sympathies
+
+(flatmap
+	(lambda (rest-of-queens)
+		(map (lambda (new-row)
+				(cons (list new-row 2) rest-of-queens))
+			(enumerate-elm 1 4)))
+	'(((1 1)) ((2 1)) ((3 1)) ((4 1))))
+
+	((1 1)) ((2 1)) ((3 1)) ((4 1))
+
+'(((1 2) ((1 1)) ((2 1)) ((3 1)) ((4 1)))
+  ((2 2) ((1 1)) ((2 1)) ((3 1)) ((4 1)))
+  ((3 2) ((1 1)) ((2 1)) ((3 1)) ((4 1)))
+  ((4 2) ((1 1)) ((2 1)) ((3 1)) ((4 1))))
