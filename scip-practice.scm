@@ -431,3 +431,84 @@ x
   ((2 2) ((1 1)) ((2 1)) ((3 1)) ((4 1)))
   ((3 2) ((1 1)) ((2 1)) ((3 1)) ((4 1)))
   ((4 2) ((1 1)) ((2 1)) ((3 1)) ((4 1))))
+
+  (define (equals? a b)
+    (cond ((not (pair? a b)) (eq? a b))
+          ((and (pair? a) (pair? b))(and (equals? (car a) (car b)) (equals? (cdr a) (cdr b))))
+          (else false)))
+
+
+        (define (deriv exp var)(cond ((number? exp) 0)((variable? exp) (if (same-variable? exp var) 1 0))((sum? exp) (make-sum (deriv (addend exp) var)(deriv (augend exp) var)))((product? exp)(make-sum(make-product (multiplier exp)(deriv (multiplicand exp) var))(make-product (deriv (multiplier exp) var)(multiplicand exp))))(else(error "unknown expression type: DERIV" exp))))
+
+
+;; constructor
+(define (make-vect x y)
+  (cons x y))
+;; selector
+(define (xcor-vect v) (car v))
+(define (ycor-vect v) (cdr v))
+;;arithmetic
+(define (add-vect v1 v2) (make-vect (+ (xcor-vect v1) (xcor-vect v2))
+                              (+ (ycor-vect v1) (ycor-vect v2))))
+(define (sub-vect v1 v2) (make-vect (- (xcor-vect v1) (xcor-vect v2))
+                              (- (ycor-vect v1) (ycor-vect v2))))
+(define (scale-vect v1 s) (make-vect (* (xcor-vect v1) s)
+                              (* (ycor-vect v1) s)))
+
+(define (make-frame origin edge1 edge2) 
+  (cons origin (cons edge1 edge2)))
+(define (edge1-frame f) (cadr f))
+(define (edge2-frame f) (cddr f))
+(define (origin-frame f) (car f))
+
+(define (segments->painter segment-list)
+  (lambda (frame)
+    (for-each (lambda (segment)
+                      (draw-line((frame-coord-map frame)(start-segment segment))((frame-coord-map frame)(end-segment segment)))) 
+              segment-list)))
+
+(define (make-segment v1 v2) ())
+(define (start-segment) ())
+(define (end-segment) ())
+
+(define (base-frame f) (edg2-frame f))
+(define (left-frame f) (edge1-frame f))
+(define (right-frame f) ())
+(define (outline-painter) ())
+
+(define (frame-coord-map frame)
+  (lambda (v)
+    (add-vect
+    (origin-frame frame)
+      (add-vect (scale-vect (xcor-vect v) (edge1-frame frame))
+                 (scale-vect (ycor-vect v) (edge2-frame frame))))))
+
+(define (transform-painter painter origin corner1 corner2)
+    (lambda (frame)
+        (let ((m (frame-coord-map frame)))
+            (let ((new-origin (m origin)))
+                (painter (make-frame new-origin
+                                    (sub-vect (m corner1) new-origin)
+                                    (sub-vect (m corner2) new-origin)))))))
+
+(define (element-of-set? x set)
+(cond ((null? set) false)
+((equal? x (car set)) true)
+(else (element-of-set? x (cdr set)))))
+
+(define (union-set set1 set2)
+    (cond ((null? set1) set2)
+          ((null? set2) set1)
+          ((element-of-sets? (car set1) set2) (union-set (cdr set1) set2))
+          (else (union-set (cdr set1) (cons (car set1) set2)))))
+
+
+(define install-get-record
+  (define (records file) (cadr file))
+  (define (get-cus-record name records))
+    (cond ((null? file) "ERROR")
+          ((eq? name (get-cust-name (car (records file))))
+              (car records))
+          (else (get-cus-record name (cdr records))))
+  (define (get-cust-name record)
+    (car record)))
