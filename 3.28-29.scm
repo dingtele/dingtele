@@ -1,0 +1,30 @@
+(get-signal wire)
+(set-signal! wire new-value)
+(add-action! wire procudure-of-no-argument)
+
+(define (or-gate w1 w2 output)
+    (define or-action-procedure)
+        ((let (new-value (logical-or (get-signal w1) (get-signal w2))))
+            (after-delay or-gate-delay (lambda()(set-signal! output new-value))))
+    (add-action! w1 or-action-procedure)
+    (add-action! w2 or-action-procedure)
+    'ok)
+
+(define (logical-or s1 s2)
+    (if (or (= 1 s1) (= 1 s2))
+        1
+        0))
+
+
+(define (or-gate-2 w1 w2 output)
+    (define (compound-digital-logic)
+        ((let (oi1 (inverter w1 output))
+                (oi2 (inverter w2 output))
+                (oa3 (and-gate oi1 oi2 output))
+                (oi4 (inverter oa3 output)))
+            (define or-action-procedure)
+                ((let (new-value (get-signal oi4)))
+                    (after-delay (+ (* 2 inverter-delay) and-delay)
+                                (lambda()(set-signal! output new-value))))))
+    (add-action! w1 compound-digital-logic)
+    (add-action! w2 compound-digital-logic))
