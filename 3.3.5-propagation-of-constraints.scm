@@ -190,9 +190,7 @@ This nondirectionality of computation is the distinguishing feature of constrain
   (connector 'has-value?))
 (define (get-value connector)
   (connector 'value))
-(define (set-value! connector 
-                    new-value 
-                    informant)
+(define (set-value! connector new-value informant)
   ((connector 'set-value!) 
    new-value 
    informant))
@@ -200,3 +198,4 @@ This nondirectionality of computation is the distinguishing feature of constrain
   ((connector 'forget) retractor))
 (define (connect connector new-constraint)
   ((connector 'connect) new-constraint))
+  
